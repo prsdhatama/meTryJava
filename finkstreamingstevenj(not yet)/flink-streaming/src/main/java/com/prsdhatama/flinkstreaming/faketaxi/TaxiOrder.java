@@ -26,14 +26,16 @@ public class TaxiOrder implements Comparable<TaxiOrder>, Serializable {
         this.placeTime = g.placeTime();
         this.addrLon = g.startLon();
         this.addrLat = g.startLat();
-        this.taxiType = g.taxiType();
+        this.taxiId = g.taxiId();
+//        this.taxiType = g.taxiType();
         this.status = g.status();
     }
+    // this is field
     public long orderId;
     public Instant placeTime;
     public float addrLon;
     public float addrLat;
-    public short taxiType;
+    public long taxiId;
     public String status;
 
     @Override
@@ -42,8 +44,8 @@ public class TaxiOrder implements Comparable<TaxiOrder>, Serializable {
         return "Order ID: "+orderId + "," +
                 "Place Time: "+placeTime.toString() + "," +
                 "addrLon: "+addrLon + "," +
-                "addrLat" +addrLat + "," +
-                "taxiType" +taxiType + "," +
+                "addrLat: " +addrLat + "," +
+                "taxiId: " +taxiId + "," +
                 status;
     }
 

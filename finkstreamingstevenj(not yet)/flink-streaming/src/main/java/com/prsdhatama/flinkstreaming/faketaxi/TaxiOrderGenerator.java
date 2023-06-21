@@ -21,7 +21,7 @@ public class TaxiOrderGenerator implements SourceFunction<TaxiOrder> {
         long id = 0;
         long maxStartTime = 0;
 
-        while (running && id<10) {
+        while (running && id<100) {
 
             // generate a batch of TaxiOrders events
                 List<TaxiOrder> orders = new ArrayList<TaxiOrder>(BATCH_SIZE);
@@ -44,7 +44,7 @@ public class TaxiOrderGenerator implements SourceFunction<TaxiOrder> {
                 context.emitWatermark(new Watermark(maxStartTime));
 
                 // prepare for the next batch, buat nambahin nilai id tiap iterasi
-                id += BATCH_SIZE;
+//                id += BATCH_SIZE;
 
                 // don't go too fast
                 Thread.sleep(BATCH_SIZE * SLEEP_MILLIS_PER_EVENT);
