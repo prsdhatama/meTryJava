@@ -18,8 +18,6 @@ public class StreamJob {
         ///basedontutorial
 //        final StreamExecutionEnvironment env = StreamExecutionEnvironment
 //                .getExecutionEnvironment();
-
-//                .createLocalEnvironmentWithWebUI(new Configuration());
         // instance StreamExecutionEnvironment menggunakan method getExecutionEnvironment dari class StreamExecutionEnvironment
         // return the new Configuration
         // the filter is work but all the data generated is BlueTaxi
