@@ -1,4 +1,4 @@
-package com.prsdhatama.flinkstreaming.faketaxi;
+package com.prsdhatama.flinkstreaming.taxi;
 
 import org.apache.flink.streaming.api.functions.source.SourceFunction;
 import java.util.ArrayList;

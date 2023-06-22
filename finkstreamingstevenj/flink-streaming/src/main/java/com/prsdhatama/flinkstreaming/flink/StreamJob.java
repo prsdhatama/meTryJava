@@ -1,10 +1,9 @@
 package com.prsdhatama.flinkstreaming.flink;
 
 
-import com.prsdhatama.flinkstreaming.faketaxi.TaxiOrder;
-import com.prsdhatama.flinkstreaming.faketaxi.TaxiOrderGenerator;
+import com.prsdhatama.flinkstreaming.taxi.TaxiOrder;
+import com.prsdhatama.flinkstreaming.taxi.TaxiOrderGenerator;
 import org.apache.flink.api.common.functions.FilterFunction;
-import org.apache.flink.streaming.api.functions.source.SourceFunction;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;

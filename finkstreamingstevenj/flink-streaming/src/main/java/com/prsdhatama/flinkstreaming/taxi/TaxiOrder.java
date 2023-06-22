@@ -1,4 +1,4 @@
-package com.prsdhatama.flinkstreaming.faketaxi;
+package com.prsdhatama.flinkstreaming.taxi;
 
 
 import com.prsdhatama.flinkstreaming.annotation.Nullable;
