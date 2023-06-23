@@ -1,6 +1,5 @@
 package com.prsdhatama.flinkstreaming.flink;
 
-
 import com.prsdhatama.flinkstreaming.taxi.TaxiOrder;
 import com.prsdhatama.flinkstreaming.taxi.TaxiOrderGenerator;
 import org.apache.flink.api.common.functions.FilterFunction;
