@@ -1,4 +1,4 @@
-package org.example;
+package com.prsdhatama.flinkkafkastreaming;
 
 public class Main {
     public static void main(String[] args) {
