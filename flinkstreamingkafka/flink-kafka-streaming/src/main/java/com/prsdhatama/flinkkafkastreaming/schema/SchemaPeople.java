@@ -1,17 +1,18 @@
 package com.prsdhatama.flinkkafkastreaming.schema;
 
 
-import com.ds_inovasi.flink.annotation.JacksonSerializable;
+import com.prsdhatama.flinkkafkastreaming.annotation.JacksonSerializable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+//simple class yang provide name
 @JacksonSerializable
-public class People {
+public class SchemaPeople {
     @JsonProperty  private String name;
 
-    public People() {
+    public SchemaPeople() {
     }
 
-    public People(String name) {
+    public SchemaPeople(String name) {
         this.name = name;
     }
 
