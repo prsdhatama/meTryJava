@@ -1,4 +1,4 @@
-package schema;
+package com.prsdhatama.flinkkafkastreaming.schema;
 
 import com.ds_inovasi.flink.annotation.JacksonSerializable;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,4 +1,4 @@
-package annotation;
+package com.prsdhatama.flinkkafkastreaming.annotation;
 
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
