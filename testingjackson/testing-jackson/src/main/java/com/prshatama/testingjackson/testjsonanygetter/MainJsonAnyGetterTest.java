@@ -9,7 +9,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 //public class MainJsonAnyGetter {
 
-public class MainJsonAnyGetter {
+public class MainJsonAnyGetterTest {
     @Test
     public void mainJsonAnyGetter() throws JsonProcessingException {
 //        @Test
@@ -22,7 +22,13 @@ public class MainJsonAnyGetter {
         String result = new ObjectMapper().writeValueAsString(bean);
 
         assertThat(result, containsString("attr1"));
-        assertThat(result, containsString("val1"));
+        assertThat(result, containsString("val2"));
+
+        //cannot use the below code because jackson serialize it in random order of key
+//        assertEquals("{\"name\":\"My Bean\"," +
+//                "\"attr1\":\"val1\" +" +
+//                "\"attr2\":\"val2\"}",result);
+
     }
 
 }

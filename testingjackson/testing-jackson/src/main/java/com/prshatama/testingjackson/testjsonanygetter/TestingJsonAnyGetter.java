@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class TestingJsonAnyGetter {
     public String name;
     private Map<String, String> properties;
@@ -15,7 +14,6 @@ public class TestingJsonAnyGetter {
         this.name = name;
         this.properties = new HashMap<>();
     }
-
 //    public TestingJsonAnyGetter(String name, Map<String, String> properties) {
 //        this.name = name;
 //        this.properties = properties;
