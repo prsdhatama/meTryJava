@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.prsdhatama</groupId>
-    <artifactId>testing-jackson</artifactId>
+    <artifactId>testing-jackson-jsonanygetter</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
