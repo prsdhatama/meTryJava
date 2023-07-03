@@ -8,7 +8,7 @@ import org.apache.flink.api.common.typeinfo.TypeInformation;
 import java.io.IOException;
 
 public class Deserialization<T> implements DeserializationSchema<T> {
-    //bikin field private final namanya type
+    //bikin field private final namanya type, Class<T> is a default way to say this is a class with a type parameter
     private final Class<T> typeClass;
     //transient biar si field mapper ga kebawa ke serialization
     public transient ObjectMapper transientMapper;
