@@ -15,8 +15,8 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
             KafkaSource<String> source = KafkaSource.<String>builder()
 //                    .setBootstrapServers("172.17.0.1:9092")
-                    .setBootstrapServers("localhost:9094")
-                    .setTopics("test")
+                    .setBootstrapServers("172.19.238.100:9092")
+                    .setTopics("animalia")
                     .setGroupId("my-group")
                     .setStartingOffsets(OffsetsInitializer.earliest())
                     .setValueOnlyDeserializer(new SimpleStringSchema())
