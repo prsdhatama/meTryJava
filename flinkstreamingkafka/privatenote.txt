@@ -1,4 +1,5 @@
 note pribadi ini saya masukkan ke github agar mudah mengingat sewaktu2
 baru bisa buat connect ke kafka install local, saya masukkan ke github agar mudah mengingat
-
 pake file yang D:\java\meTryJava\flinkstreamingkafka\flink-kafka-streaming\src\main\java\com\prsdhatama\flinkkafkastreaming\testconnection\TestConnection.java
+
+bisa buat connect
