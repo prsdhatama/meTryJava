@@ -28,7 +28,7 @@ public class Main {
         KafkaSource<SchemaDictionary> dictionaryKafkaSource = KafkaSource
                 .<SchemaDictionary>builder()
                 .setBootstrapServers("localhost:9094") //localhost
-                .setTopics("animalia")
+                .setTopics("SchemaDictionary")
                 .setValueOnlyDeserializer(new Deserialization<SchemaDictionary>(SchemaDictionary.class))
                 .setStartingOffsets(OffsetsInitializer.earliest())
                 .setGroupId("flink-yudi")
@@ -43,7 +43,7 @@ public class Main {
         KafkaSource<SchemaPeople> peopleKafkaSource = KafkaSource
                 .<SchemaPeople>builder()
                 .setBootstrapServers("localhost:9094")
-                .setTopics("agraria")
+                .setTopics("SchemaPeople")
                 .setValueOnlyDeserializer(new Deserialization<>(SchemaPeople.class))
                 .setStartingOffsets(OffsetsInitializer.earliest())
                 .setGroupId("flink-yudi")
@@ -55,18 +55,19 @@ public class Main {
                 "people-kafka"
         );
 //////////////////////debug mapper
-        dictionaryDataStream.map(
-                new MapFunction<SchemaDictionary, String>() {
-                    @Override
-                    public String map(final SchemaDictionary dictionary) throws Exception {
-                        if (dictionary != null) {
-                            return dictionary.getName();
-                        }
-
-                        return null;
-                    }
-                }
-        ).print();
+//        dictionaryDataStream.map(
+//                new MapFunction<SchemaDictionary, String>() {
+//                    @Override
+//                    public String map(final SchemaDictionary dictionary) throws Exception {
+//                        if (dictionary != null) {
+//                            return dictionary.getName();
+//                        }
+//
+//                        return null;
+//                    }
+//                }
+//
+//        ).print();
 //////////////////////debug mapper
 
 //        DataStream<String> socketText = env.socketTextStream("localhost", 9999);

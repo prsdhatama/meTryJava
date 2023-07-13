@@ -8,13 +8,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JacksonSerializable
     public class SchemaDictionary {
-        @JsonProperty("nama_watashi") private String name;
-        @JsonProperty("company_watashi") private String company;
+        @JsonProperty private String name;
+        @JsonProperty private String company;
 
-    public SchemaDictionary(String name) {
-        this.name = name;
+    public SchemaDictionary() {
     }
-
     public String getName() {
         return name;
     }

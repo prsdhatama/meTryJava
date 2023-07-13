@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 //simple class yang provide name
 @JacksonSerializable
 public class SchemaPeople {
-    @JsonProperty("nama_people")  private String name;
+    @JsonProperty private String name;
 
     public SchemaPeople() {
     }
