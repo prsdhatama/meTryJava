@@ -1,8 +1,13 @@
 package com.prsdhatama.feedinghivetokafka.dev;
 
-import org.apache.kafka.clients.producer.*;
-import org.apache.kafka.clients.consumer.*;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+
 import java.sql.*;
+import java.util.Properties;
 
 public class TestConnection {
     private static final String BOOTSTRAP_SERVERS = "localhost:9094";
