@@ -1,7 +1,5 @@
 package com.prsdhatama.feedinghivetokafka.dev;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hive.jdbc.HiveConnection;
 import org.apache.hive.jdbc.HiveDriver;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -14,7 +12,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Properties;
 
-public class TestConnection {
+public class ConsumeKafkaHive {
     private static final String kafkaBootstrapServers = "localhost:9094";
     private static final String kafkaTopic = "OfficeEmployee";
     private static final String kafkaGroupId = "hive-yudi";
