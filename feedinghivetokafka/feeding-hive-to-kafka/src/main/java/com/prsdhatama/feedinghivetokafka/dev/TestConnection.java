@@ -80,9 +80,9 @@ public class TestConnection {
                     // Insert the message into Hive table
                     String query = String.format("INSERT INTO %s (name, age, company) VALUES (%s)", hiveTable, value);
                     try {
-                        System.out.println(query);
+//                        System.out.println(query);
                         connection.createStatement().execute(query);
-//                        connection.commit();
+//                        connection.commit(); // for transactional
                         System.out.println("Inserted message into Hive: " + value);
                     } catch (SQLException e) {
                         e.printStackTrace();
