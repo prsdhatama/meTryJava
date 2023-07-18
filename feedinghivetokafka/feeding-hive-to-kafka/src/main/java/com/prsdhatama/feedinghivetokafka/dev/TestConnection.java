@@ -1,73 +1,98 @@
 package com.prsdhatama.feedinghivetokafka.dev;
 
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.security.UserGroupInformation;
+import org.apache.hive.jdbc.HiveConnection;
+import org.apache.hive.jdbc.HiveDriver;
 import org.apache.kafka.clients.consumer.Consumer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.serialization.StringDeserializer;
 
-import java.sql.*;
+import java.sql.SQLException;
+import java.util.Collections;
 import java.util.Properties;
 
 public class TestConnection {
-    private static final String BOOTSTRAP_SERVERS = "localhost:9094";
-    private static final String TOPIC = "your_topic_name";
-    private static final String HIVE_CONNECTION_URL = "jdbc:hive2://localhost:10000/default";
-    private static final String HIVE_USERNAME = "prsdhatama";
-    private static final String HIVE_PASSWORD = "prsdhatama";
+    private static final String kafkaBootstrapServers = "localhost:9094";
+    private static final String kafkaTopic = "OfficeEmployee";
+    private static final String kafkaGroupId = "hive-yudi";
+    private static final String hiveHost = "localhost";
+    private static final int hivePort = 10000;
+    private static final String hiveUsername = "prsdhatama";
+    private static final String hivePassword = "prsdhatama";
+    private static final String hiveDatabase = "default";
+    private static final String hiveTable = "office_employee";
 
     public static void main(String[] args) {
-        // Connect to Kafka producer
-        Producer<String, String> producer = createKafkaProducer();
+        // Set Kafka consumer properties
+        Properties consumerProps = new Properties();
+        consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers);
+        consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId);
+        consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 
-        // Produce messages to Kafka
-        produceMessages(producer);
+        // Create Kafka Authentication usr and password
+        Properties connectionProps = new Properties();
+        connectionProps.setProperty("user", hiveUsername);
+        connectionProps.setProperty("password", hivePassword);
 
-        // Connect to Hive and execute a query
-        executeHiveQuery();
-    }
+        // Create Kafka consumer
+        Consumer<String, String> consumer = new KafkaConsumer<>(consumerProps);
 
-    private static Producer<String, String> createKafkaProducer() {
-        Properties properties = new Properties();
-        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
-        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
-        return new KafkaProducer<>(properties);
-    }
+        // Subscribe to Kafka topic
+        consumer.subscribe(Collections.singletonList(kafkaTopic));
 
-    private static void produceMessages(Producer<String, String> producer) {
-        for (int i = 1; i <= 5; i++) {
-            String message = "Message " + i;
-            producer.send(new ProducerRecord<>(TOPIC, message), (metadata, exception) -> {
-                if (exception == null) {
-                    System.out.println("Produced message: " + message);
-                } else {
-                    System.err.println("Failed to produce message: " + message);
-                    exception.printStackTrace();
-                }
-            });
-        }
-        producer.flush();
-        producer.close();
-    }
+        // Set Hive connection properties
+        String connectionUrl = "jdbc:hive2://" + hiveHost + ":" + hivePort + "/" + hiveDatabase;
 
-    private static void executeHiveQuery() {
-        try (Connection connection = DriverManager.getConnection(HIVE_CONNECTION_URL, HIVE_USERNAME, HIVE_PASSWORD);
-             Statement statement = connection.createStatement()) {
 
-            String query = "SELECT * FROM your_table_name";
-            ResultSet resultSet = statement.executeQuery(query);
 
-            while (resultSet.next()) {
-                // Process the result set
-                String name = resultSet.getString("name");
-                int age = resultSet.getInt("age");
-                String company = resultSet.getString("company");
-                System.out.println("Name: " + name + ", Age: " + age + ", Company: " + company);
+        // Set Config if using authorization
+//        Configuration conf = new Configuration();
+//        conf.set("hadoop.security.authentication", "Kerberos");
+//        conf.set("hadoop.security.authorization", "true");
+
+        // Authenticate with Kerberos if necessary
+//        try {
+//            UserGroupInformation.setConfiguration(conf);
+//            UserGroupInformation.loginUserFromKeytab("principal", "keytab_path");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return;
+//        }
+
+        // Create Hive connection
+        try {
+            HiveDriver driver = new HiveDriver();
+            HiveConnection connection = (HiveConnection) driver.connect(connectionUrl,  connectionProps);
+//            connection.authenticate(hiveUsername, hivePassword);
+            connection.setSchema(hiveDatabase);
+
+            // Consume messages from Kafka and insert into Hive table
+            while (true) {
+                ConsumerRecords<String, String> records = consumer.poll(1000);
+                records.forEach(record -> {
+                    String value = record.value();
+                    System.out.println("Received message: " + value);
+
+                    // Insert the message into Hive table
+                    String query = String.format("INSERT INTO %s (name, age, company) VALUES (%s)", hiveTable, value);
+                    try {
+                        System.out.println(query);
+                        connection.createStatement().execute(query);
+//                        connection.commit();
+                        System.out.println("Inserted message into Hive: " + value);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                });
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+
     }
 }

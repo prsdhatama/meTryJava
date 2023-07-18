@@ -29,3 +29,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
         this.company = company;
     }
 }
+
+// contoh json untuk dictionary
+//{
+//        "name": "Wahyudi Prasidhatama",
+//        "company": "DSI"
+//}
