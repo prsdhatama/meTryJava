@@ -28,5 +28,5 @@ public class SchemaPeople {
 
 // contoh json untuk people
 //{
-//        "name": "Wahyudi Prasidhatama"
+//        {"name": "Wahyudi Prasidhatama"}
 //}

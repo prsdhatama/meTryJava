@@ -32,6 +32,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 // contoh json untuk dictionary
 //{
-//        "name": "Wahyudi Prasidhatama",
-//        "company": "DSI"
+//        {"name": "Wahyudi Prasidhatama",
+//        "company": "DSI"}
 //}
