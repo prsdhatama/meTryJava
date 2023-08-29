@@ -94,3 +94,7 @@ public class ConsumeKafkaHive {
 
     }
 }
+//            example of data in kafka
+//
+//            "Elvin", 25, "PT DSI"
+//
