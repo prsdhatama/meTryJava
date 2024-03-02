@@ -4,7 +4,7 @@ package com.prsdhatama.flink.schema;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 //"order_id","customer_id","order_status","order_purchase_timestamp","order_approved_at","order_delivered_carrier_date","order_delivered_customer_date","order_estimated_delivery_date"
-public class SchemaOrder {
+public class SchemaOrders {
     @JsonProperty
     private String order_id;
     @JsonProperty
@@ -22,7 +22,7 @@ public class SchemaOrder {
     @JsonProperty
     private String order_estimated_delivery_date;
 
-    public SchemaOrder() {
+    public SchemaOrders() {
     }
 
     public String getOrder_id() {

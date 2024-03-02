@@ -28,7 +28,7 @@ public class Deserialization<T> implements DeserializationSchema<T> {
         if (bytes == null) {
             return null;
         }else{
-            try {return  transientMapper.readValue(bytes, typeClass);}
+            try {return transientMapper.readValue(bytes, typeClass);}
             catch (JsonProcessingException e){throw new IOException("Error deserializing object", e);}
         }
     }
