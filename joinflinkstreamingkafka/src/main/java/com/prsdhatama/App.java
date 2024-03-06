@@ -1,14 +1,18 @@
 package com.prsdhatama;
 
-import com.prsdhatama.flink.jackson.Deserialization;
+import com.prsdhatama.flink.deserialize.Deserialization;
 import com.prsdhatama.flink.schema.OrdersAndCustomers;
 import com.prsdhatama.flink.schema.SchemaCustomers;
 import com.prsdhatama.flink.schema.SchemaOrders;
+import com.prsdhatama.flink.serialize.Serialization;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.state.ValueState;
 import org.apache.flink.api.common.state.ValueStateDescriptor;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.connector.base.DeliveryGuarantee;
+import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
+import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.streaming.api.datastream.DataStream;
@@ -16,6 +20,8 @@ import org.apache.flink.streaming.api.datastream.KeyedStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.co.KeyedCoProcessFunction;
 import org.apache.flink.util.Collector;
+
+import java.util.Properties;
 
 //import static com.prsdhatama.flink.utils.Constants;
 
@@ -96,8 +102,8 @@ public class App
                 .keyBy(SchemaCustomers::getCustomer_id);
 
 
-        DataStream<String> joinedStream = keyedOrders.connect(keyedCustomers).process(
-                new KeyedCoProcessFunction<String, SchemaOrders, SchemaCustomers, String>() {
+        DataStream<OrdersAndCustomers> joinedStream = keyedOrders.connect(keyedCustomers).process(
+                new KeyedCoProcessFunction<String, SchemaOrders, SchemaCustomers, OrdersAndCustomers>() {
                     private transient ValueState<SchemaCustomers> customersDimState;
                     private transient ValueState<SchemaOrders> ordersDimState;
 
@@ -116,8 +122,8 @@ public class App
 
                     @Override
                     public void processElement1(SchemaOrders orders,
-                                                KeyedCoProcessFunction<String, SchemaOrders, SchemaCustomers, String>.Context context,
-                                                Collector<String> collector) throws Exception {
+                                                KeyedCoProcessFunction<String, SchemaOrders, SchemaCustomers, OrdersAndCustomers>.Context context,
+                                                Collector<OrdersAndCustomers> collector) throws Exception {
                         SchemaCustomers customers = customersDimState.value();
 
                         if (customers != null) {
@@ -125,7 +131,8 @@ public class App
                             customersDimState.clear();
 
                             // Emit the joined result
-                            collector.collect(new OrdersAndCustomers(orders, customers).toJoinedJsonString());
+                            collector.collect(new OrdersAndCustomers(orders, customers));
+                            System.out.println("customersDimState matched with customerID " + orders.getCustomer_id() + " MATCH AND REMOVED");
                         } else {
                             // If there are no customers available, update the orders state
                             ordersDimState.update(orders);
@@ -135,16 +142,16 @@ public class App
 
                     @Override
                     public void processElement2(SchemaCustomers customers,
-                                                KeyedCoProcessFunction<String, SchemaOrders, SchemaCustomers, String>.Context context,
-                                                Collector<String> collector) throws Exception {
+                                                KeyedCoProcessFunction<String, SchemaOrders, SchemaCustomers, OrdersAndCustomers>.Context context,
+                                                Collector<OrdersAndCustomers> collector) throws Exception {
                         SchemaOrders orders = ordersDimState.value();
                         if (orders != null) {
                             // If there are customers available, clear the state
                             ordersDimState.clear();
 
                             // Emit the joined result
-                            collector.collect(new OrdersAndCustomers(orders, customers).toJoinedJsonString());
-                            System.out.println("ordersDimState matched with ID " + orders.getCustomer_id() + " MATCH AND REMOVED");
+                            collector.collect(new OrdersAndCustomers(orders, customers));
+                            System.out.println("ordersDimState matched with customerID " + orders.getCustomer_id() + " MATCH AND REMOVED");
                         } else {
                             // If there are no customers available, update the orders state
                             customersDimState.update(customers);
@@ -153,7 +160,31 @@ public class App
                     }
                 }
         );
-        joinedStream.print();
+
+        // Create a Serialization instance for OrdersAndCustomers
+//        Serialization<OrdersAndCustomers> serialization = new Serialization<>(OrdersAndCustomers.class);
+
+// Configure the Kafka sink
+
+        Properties kafkaProps = new Properties();
+        kafkaProps.put("transaction.timeout.ms", 600000); // in production, use a longer timeout
+
+        KafkaSink<OrdersAndCustomers> sink =
+                KafkaSink.<OrdersAndCustomers>builder()
+                        .setBootstrapServers("localhost:9094")
+                        .setKafkaProducerConfig(kafkaProps)
+                        .setRecordSerializer(new Serialization<>(OrdersAndCustomers.class))
+                        .setDeliverGuarantee(DeliveryGuarantee.EXACTLY_ONCE)
+                        .setTransactionalIdPrefix("usage-record-producer")
+                        .build();
+
+
+
+// Sink the joined stream to Kafka
+//        joinedStream.print();
+
+        joinedStream.sinkTo(sink);
 
         envLocal.execute("join-flink-kafka-streaming");
-    }}
+
+}}

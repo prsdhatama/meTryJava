@@ -1,4 +1,4 @@
-package com.prsdhatama.flink.jackson;
+package com.prsdhatama.flink.deserialize;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +20,7 @@ public class Deserialization<T> implements DeserializationSchema<T> {
         // Dynamic Class Loading, au dah apaan ini
 //        UserCodeClassLoader classLoader = context.getUserCodeClassLoader();
 //        Class<?> objectMapperClass = classLoader.asClassLoader().loadClass("com.fasterxml.jackson.databind.ObjectMapper");
+        DeserializationSchema.super.open(context);
         // Instantiate ObjectMapper
         this.transientMapper = new ObjectMapper();
     }

@@ -1,6 +1,7 @@
 package com.prsdhatama.flink.schema;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
 public class OrdersAndCustomers implements Serializable {
@@ -18,7 +19,7 @@ public class OrdersAndCustomers implements Serializable {
     public String toString() {
         return "<< Orders with orderId: " + orders.getOrder_id() + " | customerId: " + customers.getCustomer_id() +" are matched and updated >>";
     }
-    public String toJoinedJsonString() {
+    public ObjectNode  toJoinedJsonString() {
 
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode jsonNode = mapper.createObjectNode();
@@ -36,7 +37,7 @@ public class OrdersAndCustomers implements Serializable {
         jsonNode.put("order_delivered_customer_date", orders.getOrder_delivered_customer_date());
         jsonNode.put("order_estimated_delivery_date", orders.getOrder_estimated_delivery_date());
 
-        return jsonNode.toString();
+        return jsonNode;
     }
 
     @Override
